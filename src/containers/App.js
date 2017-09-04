@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import Search from '../components/Search'
 import List from '../components/List'
 import Header from '../containers/Header'
-import * as Actions from '../actions/Actions'
+import * as actions from './actions';
+import selectors from './selectors';
 
 class App extends Component {
     constructor(props) {
@@ -15,13 +15,11 @@ class App extends Component {
         };
     }
     setSearchValue = () => (value) => {
-        console.log(value);
         this.setState({ searchValue: value });
-    }
+    };
     render() {
-      const {  search, loadData } = this.props.Actions;
+      const {  search, loadData } = this.props;
       const { list } = this.props;
-      console.log(this.state.searchValue);
       return <div>
         <Header/>
         <div className="body__wrap">
@@ -31,14 +29,5 @@ class App extends Component {
       </div>
     }
 }
-function mapStateToProps(state) {
-  return {
-    list: state.list
-  }
-}
-function mapDispatchToProps(dispatch) {
-  return {
-    Actions: bindActionCreators(Actions, dispatch)
-  }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(App)
+
+export default connect(selectors, actions)(App);

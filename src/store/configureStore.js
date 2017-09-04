@@ -1,34 +1,41 @@
-import { createStore, applyMiddleware, compose } from 'redux';
-import { createLogger } from 'redux-logger'
+import { createStore, applyMiddleware } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+// import createSagaMiddleware from 'redux-saga';
 import thunk from 'redux-thunk';
-import reducer from '../reducers';
+import { createLogger } from 'redux-logger'
 
-export default function configureStore(initialState) {
-    const composeEnhancers = process.env.NODE_ENV !== 'production' &&
-    typeof window === 'object' &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
-        window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({}) :
-        compose;
+import rootReducer from '../reducers';
+// import apiMiddleware from './apiMiddleware';
+// import rootSaga from '../sagas';
 
-    const middleware = [thunk];
-    if (process.env.NODE_ENV !== 'production') {
-        const logger = createLogger();
-        middleware.push(logger);
-    }
+const logger = createLogger(); // <-- remove in production
 
+// const sagaMiddleware = createSagaMiddleware();
+
+export default function configureStore(api, initialState) {
     const store = createStore(
-        reducer,
+        rootReducer,
         initialState,
-        composeEnhancers(
-            applyMiddleware(...middleware)
-        ));
+        composeWithDevTools(
+            applyMiddleware(
+                // sagaMiddleware,
+                // apiMiddleware(api),
+                thunk,
+                logger,
+            ),
+        ),
+    );
 
-    if (module.hot) {
-        module.hot.accept('../reducers', () => {
-            const nextRootReducer = require('../reducers');
-            store.replaceReducer(nextRootReducer)
-        })
-    }
+    // sagaMiddleware.run(rootSaga);
+
+    // if (module.hot) {
+    //   console.log('module.hot', module.hot);
+    //   console.log('module----------------');
+    //   module.hot.accept('../reducers', () => {
+    //     const nextRootReducer = require('../reducers');
+    //     store.replaceReducer(nextRootReducer);
+    //   });
+    // }
 
     return store;
 }
