@@ -17,18 +17,18 @@ app.use(webpackDevMiddleware(compiler, { noInfo: true, publicPath: config.output
 app.use(webpackHotMiddleware(compiler))
 
 app.get("/", function(req, res) {
-  res.sendFile(__dirname + '/index.html')
+    res.sendFile(__dirname + '/index.html')
 })
 app.get("/data", function(req, res) {
-  console.log('I received a GET request');
-  var data = fs.readFileSync(__dirname + '/src/data/data.json');
-  res.json(JSON.parse(data));
+    console.log('I received a GET request');
+    var data = fs.readFileSync(__dirname + '/src/data/data.json');
+    res.json(JSON.parse(data));
 })
 
 app.listen(port, function(error) {
-  if (error) {
-    console.error(error)
-  } else {
-    console.info("==> 🌎  Listening on port %s. Open up http://localhost:%s/ in your browser.", port, port)
-  }
+    if (error) {
+        console.error(error)
+    } else {
+        console.info("==> 🌎  Listening on port %s. Open up http://localhost:%s/ in your browser.", port, port)
+    }
 })
